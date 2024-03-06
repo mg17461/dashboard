@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import EPWUploadForm
-from .models import EPWFile
+from .forms import CatchmentAreaForm
 # Import Ladybug Tools for analysis
 from ladybug.epw import EPW
 from honeybee.room import Room
@@ -109,7 +109,7 @@ def energy_sim(request):
     hbjson = model.to_hbjson()
 
     modelVis = ModelVTK.from_hbjson(hbjson)
-    visualization_path = os.path.join(settings.MEDIA_ROOT, 'visualizations', 'two-rooms.html')
+    visualization_path = os.path.join(settings.MEDIA_ROOT, 'visualizations', 'two-rooms')
 
     modelVis.to_html(folder=os.path.dirname(visualization_path), name=os.path.basename(visualization_path), show=False)
 
@@ -119,5 +119,34 @@ def energy_sim(request):
 
     return render(request, 'firstapp/energysim.html', context)
 
+def rainwater(request):
+    context = {'active_page': 'rainwater'}
+
+    if request.method == 'POST':
+        form = CatchmentAreaForm(request.POST)
+        if form.is_valid():
+            width = form.cleaned_data.get('width')
+            length = form.cleaned_data.get('length')
+            area = form.cleaned_data.get('area')
+
+            # If area is directly provided, use it; otherwise calculate from width and length
+            calculated_area = area or (width * length)
+            
+            # Define the annual rainfall (in mm)
+            annual_rainfall = 1000  # This can be dynamic based on user input or other sources
+
+            # Calculate the annual storage (m3)
+            annual_storage = calculated_area * (annual_rainfall / 1000)
+            
+            # Add results to the context
+            context.update({
+                'calculated_area': calculated_area,
+                'annual_storage': annual_storage,
+            })
+    else:
+        form = CatchmentAreaForm()
+
+    context['form'] = form
+    return render(request, 'firstapp/rainwater.html', context)
 
 

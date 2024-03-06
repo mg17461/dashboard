@@ -1,0 +1,32 @@
+{% extends 'firstapp/base.html' %}
+
+{% block content %}
+<h2>Rainwater Harvesting Calculator</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- Catchment dimensions inputs should go here -->
+    <!-- Make sure 'form' in the context contains the appropriate fields -->
+    {{ form.width.label_tag }} {{ form.width }}
+    {{ form.length.label_tag }} {{ form.length }}
+    {{ form.area.label_tag }} {{ form.area }}
+    
+    <!-- Assuming 'form' also contains the file upload field for the EPW file -->
+    {{ form.epw_file.label_tag }} {{ form.epw_file }}
+
+    <button type="submit" name="action" value="calculate_harvest">Calculate Rainwater Harvest</button>
+    <button type="submit" name="action" value="upload_epw">Upload EPW File</button>
+</form>
+
+{% if calculated_area %}
+    <h3>Results</h3>
+    <p>Catchment Area: {{ calculated_area }} m²</p>
+    <p>Annual Rainwater Harvest: {{ annual_storage }} m³</p>
+{% endif %}
+
+{% if dbt %}
+    <h3>Dry Bulb Temperature: {{ dbt }}</h3>
+{% endif %}
+
+{% endblock %}

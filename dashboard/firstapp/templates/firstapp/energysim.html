@@ -1,0 +1,23 @@
+{% extends 'firstapp/base.html' %}
+
+{% block content %}
+<h2>Run Energy Simulation in the Web</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload EPW File</button>
+</form>
+
+{% if dbt %}
+    <h3>Model Inputs</h3>
+{% endif %}
+{% if visualization_url %}
+    <h3>Energy Simulation Visualization</h3>
+    <iframe src="{{ visualization_url }}" width="600" height="400"></iframe>
+    <!-- Or as a direct link -->
+    <a href="{{ visualization_url }}" target="_blank">View Visualization</a>
+{% endif %}
+
+
+{% endblock %}

@@ -1,16 +1,89 @@
 {% extends 'firstapp/base.html' %}
 
+{% block title %}PV Tool{% endblock title %}
+
 {% block content %}
-<h2>PV Tool</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <form method="post" class="pv-form" style="border: 1px solid #dee2e6; padding: 20px; border-radius: 5px; margin-top: 20px; margin-right: auto; margin-left: 0; width: fit-content;">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <h5 class="col-sm-12">Roof dimensions</h5>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-7 text-left">Roof length (m):</label>
+                    <div class="col-sm-5 d-flex justify-content-end">
+                        {{ form.roof_length }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-7 text-left">Roof width (m):</label>
+                    <div class="col-sm-5 d-flex justify-content-end">
+                        {{ form.roof_width }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-7 text-left">{{ form.roof_type.label }}:</label>
+                    <div class="col-sm-5 d-flex justify-content-end">
+                        {{ form.roof_type }}
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <h5 class="col-sm-12">PV properties</h5>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-7 text-left">Module efficiency (%):</label>
+                    <div class="col-sm-5 d-flex justify-content-end">
+                        {{ form.module_efficiency }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-7 text-left">PV width (m):</label>
+                    <div class="col-sm-5 d-flex justify-content-end">
+                        {{ form.pv_width }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-7 text-left">PV height (m):</label>
+                    <div class="col-sm-5 d-flex justify-content-end">
+                        {{ form.pv_height }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-7 text-left">Inverter efficiency (%):</label>
+                    <div class="col-sm-5 d-flex justify-content-end">
+                        {{ form.inverter_efficiency }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-7 text-left">Other losses (%):</label>
+                    <div class="col-sm-5 d-flex justify-content-end">
+                        {{ form.other_losses }}
+                    </div>
+                </div>
+                
+                <div class="form-group row justify-content-end">
+                    <div class="col-sm-5">
+                        <button type="submit" class="btn btn-primary">Run simulation</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% if chart %}
+        <div class="col-md-7 mt-3">
+            <img src="data:image/png;base64,{{ chart }}" alt="Monthly PV Electricity Generation" style="max-width: 100%; height: auto;">
+        </div>
+        {% endif %}
+                {% if visualization_url %}
+                <a href="{{ visualization_url }}" target="_blank">View Visualization</a>
+        {% endif %}
+        
+    </div>
+    
+</div>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload EPW File</button>
-</form>
+{% endblock content %}
 
-{% if dbt %}
-    <h3>Dry Bulb Temperature</h3>
-{% endif %}
 
-{% endblock %}

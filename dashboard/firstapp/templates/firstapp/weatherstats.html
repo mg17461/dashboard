@@ -1,20 +1,14 @@
 {% extends 'firstapp/base.html' %}
 
 {% block content %}
-<h2>View Weather Statistics</h2>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload EPW File</button>
-</form>
 
-{% if dbt %}
-    <h3>Dry Bulb Temperature</h3>
-{% endif %}
 {% if image_base64 %}
     <h3>Daily Temperature Analysis</h3>
     <img src="data:image/png;base64,{{ image_base64 }}" alt="Daily Temperature Ranges and Averages">
+{% else %}
+    <p>{{ message }}</p>
 {% endif %}
 
 {% endblock %}
+

@@ -1,0 +1,38 @@
+{% extends 'firstapp/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1>Home Page</h1>
+    <p>Upload an EPW file to get started.</p>
+    <form method="post" enctype="multipart/form-data" id="uploadForm">
+        {% csrf_token %}
+        <div style="height:0; overflow:hidden;">
+            {{ form.file }}
+        </div>
+        <!-- Ensure the button is centered by using a container div with text-center class -->
+        <div class="text-center">
+            <button type="button" class="btn btn-primary" id="uploadBtn">Upload EPW File</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('uploadBtn').onclick = function() {
+        var fileInput = document.getElementById('id_file');
+        if (fileInput.files.length > 0) {
+            // If a file is already selected, submit the form
+            document.getElementById('uploadForm').submit();
+        } else {
+            // Trigger file selection dialog
+            fileInput.click();
+        }
+    };
+
+    // Trigger form submission after file is selected
+    document.getElementById('id_file').onchange = function() {
+        document.getElementById('uploadForm').submit();
+    };
+</script>
+{% endblock %}

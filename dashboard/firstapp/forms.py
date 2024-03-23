@@ -6,6 +6,7 @@ class EPWUploadForm(forms.ModelForm):
         model = EPWFile
         fields = ['file']
 
+
 class CatchmentAreaForm(forms.Form):
     width = forms.FloatField(required=False, min_value=0, help_text='Enter width in meters')
     length = forms.FloatField(required=False, min_value=0, help_text='Enter length in meters')
@@ -15,8 +16,8 @@ class PVToolForm(forms.Form):
 
     # Choices for the new dropdown
     ROOF_TYPES = (
-        ('pitched', 'Pitched roof'),
         ('flat', 'Flat roof'),
+        ('pitched', 'Pitched roof'),  
     )
     # Roof dimensions
     roof_length = forms.FloatField(label='Roof length (m):', min_value=0)

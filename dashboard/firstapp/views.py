@@ -3,20 +3,25 @@ from .forms import EPWUploadForm
 from .forms import CatchmentAreaForm
 from .forms import PVToolForm
 from .models import EPWFile
+from honeybee_energy.cli.simulate import simulate_model
+import math
 # Import Ladybug Tools for analysis
 from ladybug.epw import EPW
+import sys
 from honeybee.room import Room
 from honeybee.model import Model
+from ladybug_geometry.geometry3d import Vector3D, Point3D
 from honeybee.shade import Shade
 from honeybee_energy.generator.pv import PVProperties
 #from honeybee_energy.run import RunEnergySimulation
 from honeybee_vtk.model import Model as ModelVTK
 import os
 from django.conf import settings  # Add this import at the top of your views.py
-import openmeteo_requests
-import requests_cache
+#import openmeteo_requests
+#import requests_cache
 import pandas as pd
-from retry_requests import retry
+import shutil
+#from retry_requests import retry
 
 import numpy as np
 import matplotlib
@@ -26,6 +31,7 @@ import base64
 matplotlib.use('Agg')  # Set the backend to 'Agg'
 import matplotlib.pyplot as plt
 from io import BytesIO
+
 
 def home(request):
     if request.method == 'POST':
@@ -137,29 +143,111 @@ def weather_stats(request):
 def pv_tool(request):
     form = PVToolForm(request.POST or None)
     context = {'form': form, 'active_page': 'pv_tool'}
+
     chart = None  # Initialize chart variable
     
     if request.method == 'POST' and form.is_valid():
+        
+        epw_file_id = request.session.get('epw_file_id')
+        epw_file_model = EPWFile.objects.get(id=epw_file_id)
+        epw_file_path = epw_file_model.file.path
+        epw_data = EPW(epw_file_path)
+
         width = form.cleaned_data['roof_width']
         length = form.cleaned_data['roof_length']
+        pv_width = form.cleaned_data['pv_width']
+        pv_height = form.cleaned_data['pv_height']
         height = 3.2
-        # Dummy data for monthly PV electricity generation
+        h_seperation = 0.1
+        v_seperation = 2.5
 
         # Create room and shade
         room = Room.from_box('test1', width, length, 3.2)  # Example height of 3.2
-        offset = 0.05
-        roof_vertices = [
-        [0, 0, height+offset],           # Bottom-left corner
-        [width, 0, height+offset],       # Bottom-right corner
-        [width, length, height+offset],  # Top-right corner
-        [0, length, height+offset]       # Top-left corner
-        ]
+        v_offset = 0.05
 
-        # Convert tuples to Point3D objects
-        pv_shade = Shade.from_vertices('shade1',vertices=roof_vertices)
+        pv_array = []
+        copy_d = pv_width+h_seperation
+        rx = []
 
-        model = Model('test1', rooms=[room], orphaned_shades=[pv_shade])
+        axis_test = Vector3D(1,0,0)
+        n_max = int(np.floor((width + h_seperation)/(pv_width + h_seperation))) #calculate max panels fitting horizontally
+
+        for i in range(n_max):
+            if i == 0:
+                rx.append([
+                [0, 0, height+v_offset],           # Bottom-left corner
+                [pv_width, 0, height+v_offset],       # Bottom-right corner
+                [pv_width, pv_height, height+v_offset],  # Top-right corner
+                [0, pv_height, height+v_offset]       # Top-left corner
+                ])
+                
+            else:
+                rx.append([
+            [copy_d*(i), 0, height+v_offset],           # Bottom-left corner
+            [pv_width+(copy_d*(i)), 0, height+v_offset],       # Bottom-right corner
+            [pv_width+(copy_d*(i)), pv_height, height+v_offset],  # Top-right corner
+            [copy_d*(i), pv_height, height+v_offset]       # Top-left corner
+            ])
+       
+            origin_start = Point3D(0,0,rx[i][0][2])
+            x = Shade.from_vertices(str(i),vertices=rx[i])
+            x.rotate(axis=axis_test,angle=20, origin=origin_start)
+            
+            pv_array.append(x)
+
+        ry = []
+        y_max = int(np.floor(length/v_seperation)) #calculate max panels fitting horizontally
+
+        count = len(pv_array) + 1
+        for k in range(y_max):
+            for i in pv_array:
+                p = i.vertices
+                y = Shade.from_vertices(str(count), p)
+                y.move(Vector3D(0,v_seperation*int(k),0))
+                ry.append(y)
+                count += 1
+
+        for i in ry:
+            pv_array.append(i)
+
+        print('------')
+        #print(pv_array)
+
+        model = Model('test1', rooms=[room], orphaned_shades=pv_array)
         hbjson = model.to_hbjson()
+
+        # Define the path for the hbjsons directory within the media folder
+        hbjson_directory = os.path.join(settings.MEDIA_ROOT, 'hbjsons')
+        # Ensure the directory exists
+        os.makedirs(hbjson_directory, exist_ok=True)
+
+        # Define the path for the new HBJSON file
+        hbjson_file_path = os.path.join(hbjson_directory, 'your_filename_here.hbjson')
+        
+        # Write the HBJSON content to the file
+        with open(hbjson_file_path, 'w') as file:
+            file.write(hbjson)
+
+        # If you want to store the relative path or any other information in the context
+        hbjson_relative_path = os.path.join('hbjsons', 'your_filename_here.hbjson')
+
+        #simulate_model(hbjson_file_path,epw_file_path)
+
+    #     simulate_model(
+    #     model_file=hbjson_file_path,
+    #     epw_file=epw_file_path,
+    #     sim_par_json=None,  # Assuming no custom simulation parameters for simplicity
+    #     measures=None,
+    #     additional_string='',
+    #     additional_idf=None,
+    #     report_units='none',
+    #     viz_variable=[],
+    #     folder=None,  # Let the function decide or specify your own
+    #     check_model=False,
+    #     enforce_rooms=False,
+    #     log_file=sys.stdout  # For simplicity, consider logging to stdout or specify a file
+    # )
+
 
         modelVis = ModelVTK.from_hbjson(hbjson)
         visualization_path = os.path.join(settings.MEDIA_ROOT, 'visualizations', 'room_pv')

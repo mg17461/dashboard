@@ -1,2 +1,0 @@
-C:
-"C:\Program Files\ladybug_tools\openstudio\bin\openstudio.exe" -I "C:\Program Files\ladybug_tools\resources\measures\honeybee_openstudio_gem\lib" run --show-stdout -m -w "C:\Users\MiloGillot\Documents\dashboard\dashboard\media\simulations\test1\openstudio\workflow.osw"

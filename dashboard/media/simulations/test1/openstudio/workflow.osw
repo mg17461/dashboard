@@ -1,0 +1,20 @@
+{
+    "steps": [
+        {
+            "arguments": {
+                "simulation_parameter_json": "C:\\Users\\MiloGillot\\Documents\\dashboard\\dashboard\\media\\simulations\\test1\\openstudio\\simulation_parameter.json"
+            },
+            "measure_dir_name": "from_honeybee_simulation_parameter"
+        },
+        {
+            "arguments": {
+                "model_json": "C:\\Users\\MiloGillot\\Documents\\dashboard\\dashboard\\media\\simulations\\test1\\openstudio\\test1.hbjson"
+            },
+            "measure_dir_name": "from_honeybee_model"
+        }
+    ],
+    "measure_paths": [
+        "C:\\Program Files\\ladybug_tools\\resources\\measures\\honeybee_openstudio_gem\\lib\\measures"
+    ],
+    "weather_file": "C:\\Users\\MiloGillot\\Documents\\dashboard\\dashboard\\media\\epw_files\\GBR_ENG_Bristol-Filton.AF.036280_TMYx.epw"
+}

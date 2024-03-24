@@ -1,0 +1,4 @@
+[23:55:25.061507 WARN] [openstudio.EpwFile] Successive data points (1998-Jan-31 to 2004-Feb-01, ending on line 753) are greater than 1 day apart in EPW file 'C:/Users/MiloGillot/Documents/dashboard/dashboard/media/epw_files/GBR_ENG_Bristol-Filton.AF.036280_TMYx.epw'. Data will be treated as typical (TMY)
+[23:55:27.459258 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always On Discrete', points to an object named OnOff from field 1, but that object cannot be located.
+[23:55:27.459258 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always Off Discrete', points to an object named OnOff 1 from field 1, but that object cannot be located.
+[23:55:27.460251 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always On Continuous', points to an object named Fractional 1 from field 1, but that object cannot be located.

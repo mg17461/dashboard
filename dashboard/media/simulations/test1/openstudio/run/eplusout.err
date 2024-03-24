@@ -1,0 +1,89 @@
+Program Version,EnergyPlus, Version 23.2.0-7636e6b3e9, YMD=2024.03.23 23:55,
+   ** Warning ** ManageSizing: For a zone sizing run, there must be at least 1 Sizing:Zone input object. SimulationControl Zone Sizing option ignored.
+   ** Warning ** ManageSizing: For a plant sizing run, there must be at least 1 Sizing:Plant object input. SimulationControl Plant Sizing option ignored.
+   ** Warning ** Weather file location will be used rather than entered (IDF) Location object.
+   **   ~~~   ** ..Location object=SITE 1
+   **   ~~~   ** ..Weather File Location=Bristol-Filton.AF ENG GBR SRC-TMYx WMO#=036280
+   **   ~~~   ** ..due to location differences, Latitude difference=[51.52] degrees, Longitude difference=[2.58] degrees.
+   **   ~~~   ** ..Time Zone difference=[0.0] hour(s), Elevation difference=[5900.00] percent, [59.00] meters.
+   ** Warning ** ProcessScheduleInput: Schedule:Constant="ALWAYS ON DISCRETE", Blank Schedule Type Limits Name input -- will not be validated.
+   ** Warning ** ProcessScheduleInput: Schedule:Constant="ALWAYS OFF DISCRETE", Blank Schedule Type Limits Name input -- will not be validated.
+   ** Warning ** ProcessScheduleInput: Schedule:Constant="ALWAYS ON CONTINUOUS", Blank Schedule Type Limits Name input -- will not be validated.
+   ** Warning ** GetHTSurfaceData: Surfaces with interface to Ground found but no "Ground Temperatures" were input.
+   **   ~~~   ** Found first in surface=TEST1_BOTTOM
+   **   ~~~   ** Defaults, constant throughout the year of (18.0) will be used.
+   ** Warning ** CheckUsedConstructions: There are 13 nominally unused constructions in input.
+   **   ~~~   ** For explicit details on each unused construction, use Output:Diagnostics,DisplayExtraWarnings;
+   ************* Testing Individual Branch Integrity
+   ************* All Branches passed integrity testing
+   ************* Testing Individual Supply Air Path Integrity
+   ************* All Supply Air Paths passed integrity testing
+   ************* Testing Individual Return Air Path Integrity
+   ************* All Return Air Paths passed integrity testing
+   ************* No node connection errors were found.
+   ************* Beginning Simulation
+   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= "U.S. AVG  COMMERCIAL-ELECTRICITY" has no energy cost. 
+   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.
+   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= "U.S. AVG  COMMERCIAL-DISTILLATE OIL" has no energy cost. 
+   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.
+   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= "U.S. AVG  COMMERCIAL-RESIDUAL OIL" has no energy cost. 
+   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.
+   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= "U.S. AVG  COMMERCIAL-NATURAL GAS" has no energy cost. 
+   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.
+   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= "U.S. AVG  COMMERCIAL-COAL" has no energy cost. 
+   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.
+   ************* Simulation Error Summary *************
+   ** Warning ** The following Report Variables were requested but not generated -- check.rdd file
+   **   ~~~   ** Either the IDF did not contain these elements, the variable name is misspelled,
+   **   ~~~   ** or the requested variable is an advanced output which requires Output : Diagnostics, DisplayAdvancedReportVariables;
+   ************* Key=*, VarName=BASEBOARD ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=DISTRICT COOLING CHILLED WATER ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=DISTRICT HEATING HOT WATER ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=EVAPORATIVE COOLER ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=FAN ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=HEATING COIL ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=HEATING COIL NATURALGAS ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=HEATING COIL TOTAL HEATING ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=BOILER ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=HOT_WATER_LOOP_CENTRAL_AIR_SOURCE_HEAT_PUMP ELECTRICITY CONSUMPTION, Frequency=Hourly
+   ************* Key=*, VarName=HUMIDIFIER ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=PUMP ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=VRF HEAT PUMP COOLING ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=VRF HEAT PUMP CRANKCASE HEATER ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=VRF HEAT PUMP DEFROST ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=VRF HEAT PUMP HEATING ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=WATER HEATER ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=WATER HEATER NATURALGAS ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=WATER USE EQUIPMENT HEATING ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=BOILER NATURALGAS ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE ELECTRIC EQUIPMENT ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE GAS EQUIPMENT NATURALGAS ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE IDEAL LOADS SUPPLY AIR TOTAL COOLING ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE IDEAL LOADS SUPPLY AIR TOTAL HEATING ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE LIGHTS ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE OTHER EQUIPMENT LOST HEAT ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE OTHER EQUIPMENT TOTAL HEATING ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE VRF AIR TERMINAL COOLING ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE VRF AIR TERMINAL HEATING ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=ZONE VENTILATION FAN ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=CHILLER ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=CHILLER HEATER SYSTEM COOLING ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=CHILLER HEATER SYSTEM HEATING ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=COOLING COIL ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=COOLING COIL WATER HEATING ELECTRICITY ENERGY, Frequency=Hourly
+   ************* Key=*, VarName=COOLING TOWER FAN ELECTRICITY ENERGY, Frequency=Hourly
+   ************* There are 4 unused schedules in input.
+   ************* There are 4 unused week schedules in input.
+   ************* There are 4 unused day schedules in input.
+   ************* Use Output:Diagnostics,DisplayUnusedSchedules; to see them.
+   *************
+   ************* ===== Final Error Summary =====
+   ************* The following error categories occurred.  Consider correcting or noting.
+   ************* Nominally Unused Constructions
+   ************* ..The nominally unused constructions warning is provided to alert you to potential conditions that can cause
+   ************* ..extra time during simulation. Each construction is calculated by the algorithm indicated in the HeatBalanceAlgorithm
+   ************* ..object. You may remove the constructions indicated (when you use the DisplayExtraWarnings option).
+   *************
+   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Sizing Error Summary. During Sizing: 2 Warning; 0 Severe Errors.
+   ************* EnergyPlus Completed Successfully-- 14 Warning; 0 Severe Errors; Elapsed Time=00hr 00min 39.18sec

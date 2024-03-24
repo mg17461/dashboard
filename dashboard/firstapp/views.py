@@ -1,14 +1,22 @@
 from django.shortcuts import render, redirect
+import re
+from ladybug.futil import preparedir, nukedir
 from .forms import EPWUploadForm
 from .forms import CatchmentAreaForm
 from .forms import PVToolForm
 from .models import EPWFile
+import json
 from honeybee_energy.cli.simulate import simulate_model
+from honeybee.typing import clean_ep_string
+from honeybee_energy.run import to_openstudio_osw, run_osw, run_idf, output_energyplus_files
+from honeybee_energy.result.generation import generation_data_from_sql, generation_summary_from_sql
+from honeybee_energy.simulation.parameter import SimulationParameter
 import math
 # Import Ladybug Tools for analysis
 from ladybug.epw import EPW
 import sys
 from honeybee.room import Room
+from lbt_recipes.version import check_openstudio_version
 from honeybee.model import Model
 from ladybug_geometry.geometry3d import Vector3D, Point3D
 from honeybee.shade import Shade
@@ -83,6 +91,7 @@ def weather_stats(request):
 
             #HourlyContinuousCollection from epw file
             dry_bulb_temp = epw_data.dry_bulb_temperature
+            print(dry_bulb_temp)
 
             #monthly_averages = dry_bulb_temp.average_monthly()
             grouped = dry_bulb_temp.group_by_month()
@@ -210,46 +219,81 @@ def pv_tool(request):
         for i in ry:
             pv_array.append(i)
 
+        shades = []
+        for pv in pv_array:
+            shades.append(pv.duplicate())
+            if math.degrees(Vector3D(0, 0, 1).angle(pv.normal)) - 90 > 1:
+                msg = 'Shade "{}" is pointing downwards, which is atypical of photovoltaics.\n' \
+                    'You will likely want to flip the geometry to have it point upwards to ' \
+                    'the sky.'.format(pv.display_name)
+                print(msg)
+            
+        # create the base PV properties
+        display_name = 'Photovoltaic Array {}'.format(len(shades))
+        print(display_name)
+        pv_id = clean_ep_string(display_name)
+        pv_props = PVProperties(pv_id)
+        pv_props.display_name = pv_id
+        for shade in shades:
+            shade.properties.energy.pv_properties = pv_props
+
+
         print('------')
         #print(pv_array)
-
-        model = Model('test1', rooms=[room], orphaned_shades=pv_array)
-        hbjson = model.to_hbjson()
-
-        # Define the path for the hbjsons directory within the media folder
-        hbjson_directory = os.path.join(settings.MEDIA_ROOT, 'hbjsons')
-        # Ensure the directory exists
-        os.makedirs(hbjson_directory, exist_ok=True)
-
-        # Define the path for the new HBJSON file
-        hbjson_file_path = os.path.join(hbjson_directory, 'your_filename_here.hbjson')
+        model = Model('test1', rooms=[room], orphaned_shades=shades)
+         # process the simulation parameters
         
-        # Write the HBJSON content to the file
-        with open(hbjson_file_path, 'w') as file:
-            file.write(hbjson)
+        sim_par = SimulationParameter()
+        sim_par.output.add_zone_energy_use()
+        sim_par.output.add_hvac_energy_use()
+        sim_par.output.add_electricity_generation()
+       
+        #sim_par = sim_par.duplicate()  # ensure input is not edited
 
-        # If you want to store the relative path or any other information in the context
-        hbjson_relative_path = os.path.join('hbjsons', 'your_filename_here.hbjson')
+        simfolder_path = os.path.join(settings.MEDIA_ROOT, 'simulations')
+        clean_name = re.sub(r'[^.A-Za-z0-9_-]', '_', model.display_name)
+        directory = os.path.join(simfolder_path, clean_name, 'openstudio')
 
-        #simulate_model(hbjson_file_path,epw_file_path)
+        model = model.duplicate()
+        model.properties.energy.remove_hvac_from_no_setpoints()
+         # auto-assign stories if there are none since most OpenStudio measures need these
+        if len(model.stories) == 0 and len(model.rooms) != 0:
+            model.assign_stories_by_floor_height()
 
-    #     simulate_model(
-    #     model_file=hbjson_file_path,
-    #     epw_file=epw_file_path,
-    #     sim_par_json=None,  # Assuming no custom simulation parameters for simplicity
-    #     measures=None,
-    #     additional_string='',
-    #     additional_idf=None,
-    #     report_units='none',
-    #     viz_variable=[],
-    #     folder=None,  # Let the function decide or specify your own
-    #     check_model=False,
-    #     enforce_rooms=False,
-    #     log_file=sys.stdout  # For simplicity, consider logging to stdout or specify a file
-    # )
+        nukedir(directory, True)
+        preparedir(directory)
+        sch_directory = os.path.join(directory, 'schedules')
+        preparedir(sch_directory)
+
+        # write the model parameter JSONs
+        model_dict = model.to_dict(triangulate_sub_faces=True)
+        model.properties.energy.add_autocal_properties_to_dict(model_dict)
+        model_json = os.path.join(directory, '{}.hbjson'.format(clean_name))
+        with open(model_json, 'wb') as fp:
+            model_str = json.dumps(model_dict, ensure_ascii=False)
+            fp.write(model_str.encode('utf-8'))
 
 
-        modelVis = ModelVTK.from_hbjson(hbjson)
+        # write the simulation parameter JSONs
+        sim_par_dict = sim_par.to_dict()
+        sim_par_json = os.path.join(directory, 'simulation_parameter.json')
+        with open(sim_par_json, 'w') as fp:
+            json.dump(sim_par_dict, fp)
+
+        osw = to_openstudio_osw(osw_directory=directory, model_path=model_json, sim_par_json_path=sim_par_json, epw_file=epw_file_path)
+
+        osm, idf = run_osw(osw)
+        if idf is None:
+            print('error null idf')
+        sql = run_idf(idf,epw_file_path)[0]
+        print(sql)
+
+        production = generation_data_from_sql(sql)[0]
+        print(production)
+        monthly = production.total_monthly()
+        print(monthly)
+
+        modelVis = ModelVTK.from_hbjson(model_json)
         visualization_path = os.path.join(settings.MEDIA_ROOT, 'visualizations', 'room_pv')
 
         modelVis.to_html(folder=os.path.dirname(visualization_path), name=os.path.basename(visualization_path), show=False)
@@ -259,7 +303,7 @@ def pv_tool(request):
         context['visualization_url'] = visualization_url
 
         #shade = Shade.from_dict
-        monthly_generation = [120, 130, 150, 170, 160, 180, 200, 190, 210, 200, 220, 210]  # Example kWh values
+        monthly_generation = monthly.values  # Example kWh values
         
         # Set the Seaborn theme for nicer aesthetics
         sns.set_theme()

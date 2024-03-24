@@ -1,0 +1,14 @@
+{
+  "FromHoneybeeModel" : 
+  {
+    "applicable" : true,
+    "include_datetimes" : false,
+    "model_json" : "C:\\Users\\MiloGillot\\Documents\\dashboard\\dashboard\\media\\simulations\\test1\\openstudio\\test1.hbjson",
+    "schedule_csv_dir" : ""
+  },
+  "FromHoneybeeSimulationParameter" : 
+  {
+    "applicable" : true,
+    "simulation_parameter_json" : "C:\\Users\\MiloGillot\\Documents\\dashboard\\dashboard\\media\\simulations\\test1\\openstudio\\simulation_parameter.json"
+  }
+}

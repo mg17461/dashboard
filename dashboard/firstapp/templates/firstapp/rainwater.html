@@ -1,32 +1,288 @@
-{% extends 'firstapp/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
 
-{% block content %}
-<h2>Rainwater Harvesting Calculator</h2>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/water-page.css' %}">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Open Sans:wght@400;700;800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;900&display=swap"
+    />
+  </head>
+  <body>
+    <div class="water-page">
+      <header class="nav1">
+        <div class="rectangle3"></div>
+        <div class="landie2">Dashboard</div>
+        <div class="home-wrapper">
+          <div class="home2">Home</div>
+        </div>
+        <div class="about-wrapper">
+          <div class="about2">Solar PV</div>
+        </div>
+        <div class="contact-container">
+          <div class="contact2">Water</div>
+        </div>
+      </header>
+      <main class="content-main1">
+        <div class="background1"></div>
+        <div class="content-main-item"></div>
+        <section class="frame-section">
+          <div class="frame-parent2">
+            <div class="frame-wrapper1">
+              <div class="rainwater-harvesting-calculato-parent">
+                <h2 class="rainwater-harvesting-calculato-container">
+                  <p class="rainwater-harvesting-calculato">
+                    Rainwater harvesting calculator
+                  </p>
+                </h2>
+                <div class="this-rainwater-harvesting-calc-wrapper">
+                  <div class="this-rainwater-harvesting">
+                    This rainwater harvesting calculator estimates your
+                    collection capacity using local weather data. Input your
+                    catchment area to see monthly and annual projections, and
+                    compare them with your building's water demand to calculate
+                    your savings.
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="length-catchment-area">
+                    <div class="frame-parent3">
+                        <div class="width-wrapper">
+                            <div class="width1">Width</div>
+                        </div>
+                        <div class="length1">Length</div>
+                        <div class="catchment-area-m21">Catchment area (m²)</div>
+                    </div>
+                      
+                <div class="length-catchment-area-inner">
+                    <div class="frame-parent4">
+                    <div class="collection-container">                       
+                            {{ form.width }}                      
+                        <button class="frame-button">
+                        <div class="frame-child1"></div>
+                        <div class="group-div">
+                            <div class="frame-child2"></div>
+                            <div class="calculate1">Calculate</div>
+                        </div>
+                        </button>
+                    </div>
+                    <div class="x-container">
+                        <div class="x1">X</div>
+                    </div>
+                    <div class="collection-container1">                        
+                            {{ form.length }}    
+                    </div>
+                    <div class="frame">
+                        <div class="div5">=</div>
+                    </div>
+                        {{ form.catchment_area }}    
+                    </div>
+                </div>
+                </div>
+                </form>
+          </div>
+          <img
+            class="image-2-icon1"
+            loading="lazy"
+            alt=""
+            src="{% static 'images/image-2@2x.png' %}"
+          />
+        </section>
+        <section class="seperator-parent">
+          <div class="seperator1"></div>
+          <div class="frame-parent5" style="{% if not form_submitted %}display: none;{% endif %}">
+            <div class="frame-wrapper2">
+              <div class="frame-parent6">
+                <div class="water-demand-wrapper">
+                  <div class="water-demand hidden">Water demand</div>
+                </div>
+                <div class="collection-and-calculate-label-parent">
+                  <div class="collection-and-calculate-label">
+                    <b class="number-of-occupants2">Number of occupants</b>
+                  </div>                  
+                    <input type="number" class="input-class" min=1 value=1 id="num_people" name="num_people" placeholder="Enter value...">  
+                </div>
+                <div class="daily-cons1">
+                  <div class="daily-cons-item"></div>
+                  <div class="daily-consumption2">
+                    <p class="daily-consumption3">Daily consumption</p>
+                    <p class="blank-line2">&nbsp;</p>
+                  </div>
+                  <div class="daily-consumption-label-parent">
+                    <div class="daily-consumption-label">50</div>
+                    <div class="lday">L/day</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="frame-wrapper3">
+              <div class="frame-parent7">
+                <div class="rectangle-parent1">
+                  <div class="frame-child3"></div>
+                  <div class="annual-rainwater-collection-container">
+                    <p class="annual-rainwater-collection">
+                      Annual rainwater collection
+                    </p>
+                    <p class="blank-line3">&nbsp;</p>
+                    <p class="blank-line4">&nbsp;</p>
+                  </div>
+                </div>
+                <img
+                  class="image-3-icon1"
+                  loading="lazy"
+                  alt=""
+                  src= {% static 'images/image-3@2x.png' %}
+                />
+              </div>
+            </div>
+            <div class="calculate-button-parent">
+              <div class="calculate-button1">
+                <div class="rectangle-parent2">
+                  <div class="frame-child4"></div>
+                  <div class="annual-summary-statistics2">
+                    Annual Summary Statistics
+                  </div>
+                </div>
+              </div>
+              <div class="frame-wrapper4">
+                <div class="collection-parent1">
+                  <div class="collection9">
+                    <div class="collection-child8"></div>
+                    <div class="collection10">Collection</div>
+                    <div class="collection-inner1">
+                      <div class="parent2">
+                        <div class="div6">{{ annual_storage }}</div>
+                        <div class="savings-display">
+                          <div class="m3">m<sup>3</sup></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="consumption2">
+                    <div class="consumption-item"></div>
+                    <div class="consumption3">Consumption</div>
+                    <div class="parent3">
+                      <div class="div7">18.3</div>
+                      <div class="savings-display1">
+                        <div class="m31">m<sup>3</sup></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="frame-parent8">
+                <div class="rectangle-parent3">
+                  <div class="frame-child5"></div>
+                  <div class="savings2">
+                    <p class="savings3">Savings</p>
+                  </div>
+                </div>
+                <div class="m3-water-12-container">
+                  <p class="m3-water">
+                    <span class="span">{{ annual_storage }} </span>
+                    <span>m<sup>3</sup> water</span>
+                  </p>
+                  <p class="blank-line5">&nbsp;</p>
+                  <p class="kgco22">
+                    <span>1.2 </span>
+                    <span class="kgco23">kgCO2</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <div class="footer1">
+        <div class="rectangle4"></div>
+        <div class="parent4">
+          <div class="div8">©2023 Yourcompany</div>
+          <div class="landie3">Landing</div>
+        </div>
+        <footer class="rectangle-parent4">
+          <div class="rectangle5"></div>
+          <div class="frame-parent9">
+            <div class="home-group">
+              <div class="home3">Home</div>
+              <div class="about3">About</div>
+              <div class="contact3">Contact</div>
+            </div>
+            <div class="instagram-icon">
+              <img
+                class="iconsocialinstagram1"
+                loading="lazy"
+                alt=""
+                src={% static 'images/iconsocialinstagram@2x.png' %}
+              />
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Function to calculate the catchment area
+            function calculateArea() {
+                var width = parseFloat($('#id_width').val()); // Parse the width value to a number
+                var length = parseFloat($('#id_length').val()); // Parse the length value to a number
+                if (!isNaN(width) && !isNaN(length)) { // Check if both width and length are numbers
+                    var area = width * length;
+                    $('#id_catchment_area').val(area.toFixed(2)); // Update the area input with the calculated value
+                }
+            }
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    
-    <!-- Catchment dimensions inputs should go here -->
-    <!-- Make sure 'form' in the context contains the appropriate fields -->
-    {{ form.width.label_tag }} {{ form.width }}
-    {{ form.length.label_tag }} {{ form.length }}
-    {{ form.area.label_tag }} {{ form.area }}
-    
-    <!-- Assuming 'form' also contains the file upload field for the EPW file -->
-    {{ form.epw_file.label_tag }} {{ form.epw_file }}
+            function calculateConsumption() {
+                var numPeople = parseFloat($('#num_people').val());
+                if (!isNaN(numPeople)) {
+                    // Assuming 50L per person per day
+                    var dailyConsumption = numPeople * 50;
+                    var annualConsumption = (dailyConsumption * 365)/1000; // Calculate annual consumption
+        
+                    // Update the DOM with the new values
+                    $('.daily-consumption-label').text(dailyConsumption.toFixed(0));
+                    // Assuming you have a .annual-consumption-label for showing the annual consumption
+                    $('.div7').text(annualConsumption.toFixed(1));
+                }
+            }
+        
+            // Event listener for input on the width and length fields
+            $('#id_width, #id_length').on('input', function() {
+                // Check if the area field is empty or not
+                if (!$('#id_catchment_area').val()) {
+                    calculateArea();
+                }
+            });
+        
+            // If the area field is manually changed, remove the auto-calculation
+            $('#id_catchment_area').on('input', function() {
+                if ($(this).val()) {
+                    // Remove the event listener if the area is manually entered
+                    $('#id_width, #id_length').off('input', calculateArea);
+                } else {
+                    // Reattach the event listener if the area is cleared
+                    $('#id_width, #id_length').on('input', calculateArea);
+                }
+            });
 
-    <button type="submit" name="action" value="calculate_harvest">Calculate Rainwater Harvest</button>
-    <button type="submit" name="action" value="upload_epw">Upload EPW File</button>
-</form>
+            // Event listener for input on the number of people field
+            $('#num_people').on('input', function() {
+                calculateConsumption();
+            });
 
-{% if calculated_area %}
-    <h3>Results</h3>
-    <p>Catchment Area: {{ calculated_area }} m²</p>
-    <p>Annual Rainwater Harvest: {{ annual_storage }} m³</p>
-{% endif %}
-
-{% if dbt %}
-    <h3>Dry Bulb Temperature: {{ dbt }}</h3>
-{% endif %}
-
-{% endblock %}
+        });
+    </script>
+  </body>
+</html>

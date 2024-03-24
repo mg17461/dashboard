@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  line-height: normal;
+}
+
+:root {
+  /* fonts */
+  --regular-14: Roboto;
+  --font-open-sans: "Open Sans";
+
+  /* font sizes */
+  --regular-14-size: 14px;
+  --bold-26-size: 26px;
+  --font-size-2xl: 21px;
+  --font-size-lgi: 19px;
+  --font-size-5xl: 24px;
+  --font-size-21xl: 40px;
+  --font-size-29xl: 48px;
+  --font-size-10xl: 29px;
+  --font-size-19xl: 38px;
+  --font-size-xl: 20px;
+  --font-size-base: 16px;
+  --font-size-13xl: 32px;
+
+  /* Colors */
+  --colour-secondary-white-100-general: #fff;
+  --color-lavender: #e7ecff;
+  --colour-main-blue-300: #929ecc;
+  --color-lightgray: #cdd1d4;
+  --colour-logo-primary: #37447e;
+  --colour-main-grey-400: #939ea4;
+  --colour-main-grey-800: #393e41;
+  --color-darkslategray-100: #122c42;
+  --color-floralwhite: #faf9ee;
+  --color-paleturquoise: #c1f4f0;
+  --color-ivory: #fefcef;
+  --color-wheat: #efe3b9;
+  --color-lightcyan: #cdf7f2;
+
+  /* Gaps */
+  --gap-13xl: 32px;
+  --gap-base: 16px;
+  --gap-xl-8: 20.8px;
+  --gap-xl: 20px;
+  --gap-6xl: 25px;
+  --gap-39xl: 58px;
+  --gap-10xl: 29px;
+  --gap-39xl-1: 58.1px;
+  --gap-smi-2: 12.2px;
+  --gap-3xs-6: 9.6px;
+  --gap-lgi: 19px;
+  --gap-5xs: 8px;
+  --gap-mini: 15px;
+  --gap-3xl: 22px;
+  --gap-4xs: 9px;
+  --gap-155xl-3: 174.3px;
+  --gap-7xs-5: 5.5px;
+  --gap-14xl-3: 33.3px;
+  --gap-19xl-4: 38.4px;
+  --gap-39xl-3: 58.3px;
+
+  /* Paddings */
+  --padding-12xs: 1px;
+  --padding-12xl: 31px;
+  --padding-12xl-2: 31.2px;
+  --padding-xl: 20px;
+  --padding-64xl: 83px;
+  --padding-9xs-2: 3.2px;
+  --padding-8xs: 5px;
+  --padding-9xl-1: 28.1px;
+  --padding-29xl-5: 48.5px;
+  --padding-55xl-4: 74.4px;
+  --padding-18xl: 37px;
+  --padding-2xl: 21px;
+  --padding-13xl: 32px;
+  --padding-8xs-3: 4.3px;
+  --padding-3xs: 10px;
+  --padding-7xl: 26px;
+  --padding-4xs-7: 8.7px;
+  --padding-5xs: 8px;
+  --padding-8xs-4: 4.4px;
+  --padding-4xs: 9px;
+  --padding-xs: 12px;
+  --padding-smi: 13px;
+  --padding-mid-3: 17.3px;
+  --padding-77xl: 96px;
+  --padding-lgi-7: 19.7px;
+  --padding-base-5: 15.5px;
+  --padding-9xs: 4px;
+  --padding-30xl: 49px;
+  --padding-5xs-2: 7.2px;
+  --padding-7xs: 6px;
+  --padding-7xs-8: 5.8px;
+
+  /* Border radiuses */
+  --br-31xl: 50px;
+}

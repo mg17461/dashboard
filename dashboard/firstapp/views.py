@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 import re
 from ladybug.futil import preparedir, nukedir
 from .forms import EPWUploadForm
 from .forms import CatchmentAreaForm
+import openmeteo_requests, requests_cache
+from retry_requests import retry
 from .forms import PVToolForm
 from .models import EPWFile
 import json
@@ -354,23 +358,28 @@ def energy_sim(request):
 
     return render(request, 'firstapp/energysim.html', context)
 
+@require_http_methods(["GET", "POST"])
 def rainwater(request):
-    context = {'active_page': 'rainwater'}
+    context = {'form_submitted': False, 'active_page': 'rainwater'}
     
     if request.method == 'POST':
+        
         form = CatchmentAreaForm(request.POST, request.FILES)
         if form.is_valid():
+            context['form_submitted'] = True
             # Extracted width, length, area from form
-            width = form.cleaned_data.get('width')
-            length = form.cleaned_data.get('length')
-            area = form.cleaned_data.get('area')
+
+            area = form.cleaned_data.get('catchment_area')
 
             # Assuming 'epw_file' is the name of your FileField for EPW files
-            epw_file = request.FILES.get('epw_file')
-            if epw_file:
+            epw_file_id = request.session.get('epw_file_id')
+            epw_file_model = EPWFile.objects.get(id=epw_file_id)
+            epw_file_path = epw_file_model.file.path
+            epw_data = EPW(epw_file_path)
+            lat_long = epw_data.location
+            
+            if epw_data:
                 # Process EPW file here to extract latitude and longitude
-                latitude, longitude = extract_lat_long_from_epw(epw_file)  # Implement this function
-
                 # Setup the Open-Meteo API client with cache and retry on error
                 cache_session = requests_cache.CachedSession('.cache', expire_after=-1)
                 retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
@@ -379,16 +388,20 @@ def rainwater(request):
                 # API Call with extracted latitude and longitude
                 url = "https://archive-api.open-meteo.com/v1/archive"
                 params = {
-                    "latitude": latitude,
-                    "longitude": longitude,
-                    "start_date": "2024-02-20",
-                    "end_date": "2024-03-05",
+                    "latitude": lat_long.latitude,
+                    "longitude": lat_long.longitude,
+                    "start_date": "2023-01-01",
+                    "end_date": "2023-12-31",
                     "hourly": "rain"
                 }
                 responses = openmeteo.weather_api(url, params=params)
 
                 # Assuming single location response for simplicity
                 response = responses[0]
+                print(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
+                print(f"Elevation {response.Elevation()} m asl")
+                print(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
+                print(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
                 hourly = response.Hourly()
                 hourly_rain = hourly.Variables(0).ValuesAsNumpy()
 
@@ -401,14 +414,13 @@ def rainwater(request):
                 hourly_data["rain"] = hourly_rain
 
                 hourly_dataframe = pd.DataFrame(data=hourly_data)
-                print(hourly_dataframe)  # Or process as needed
+                annual_rainfall = hourly_dataframe['rain'].sum()
 
-            calculated_area = area or (width * length)
-            annual_rainfall = 1000  # This can be dynamic based on user input or other sources
-            annual_storage = calculated_area * (annual_rainfall / 1000)
+            # calculated_area = area if area is not None else (width * length)
+            annual_storage = round(area * (annual_rainfall / 1000),1)
             
             context.update({
-                'calculated_area': calculated_area,
+                'calculated_area': area,
                 'annual_storage': annual_storage,
             })
     else:

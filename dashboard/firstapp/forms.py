@@ -8,9 +8,9 @@ class EPWUploadForm(forms.ModelForm):
 
 
 class CatchmentAreaForm(forms.Form):
-    width = forms.FloatField(required=False, min_value=0, help_text='Enter width in meters')
-    length = forms.FloatField(required=False, min_value=0, help_text='Enter length in meters')
-    area = forms.FloatField(required=False, min_value=0, help_text='Enter area in square meters')
+    width = forms.FloatField(min_value=0.0, required=True, widget=forms.NumberInput(attrs={'class': 'input-class', 'placeholder': 'Enter value...'}))
+    length = forms.FloatField(min_value=0.0, required=True, widget=forms.NumberInput(attrs={'class': 'input-class', 'placeholder': 'Enter value...'}))
+    catchment_area = forms.FloatField(required=False, widget=forms.NumberInput(attrs={'class': 'input-class', 'placeholder': ''}))
 
 class PVToolForm(forms.Form):
 
